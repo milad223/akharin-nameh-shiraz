@@ -28,7 +28,7 @@ jobs:
           unzip -q akharin_nameh_shiraz_github_build.zip -d project
           echo "Project extracted"
 
-      - name: Build APK
+      - name: Build APK 
   working-directory: project
   run: |
     wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip -O /tmp/gradle.zip
