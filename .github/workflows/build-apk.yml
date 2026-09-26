@@ -29,10 +29,13 @@ jobs:
           echo "Project extracted"
 
       - name: Build APK
-        working-directory: project
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+  working-directory: project
+  run: |
+    wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip -O /tmp/gradle.zip
+    unzip -q /tmp/gradle.zip -d /tmp
+    export PATH="/tmp/gradle-8.9/bin:$PATH"
+    gradle --no-daemon --stacktrace assembleDebug
+
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
