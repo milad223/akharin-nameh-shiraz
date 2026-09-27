@@ -34,7 +34,9 @@ jobs:
         run: |
           rm -rf project
           mkdir project
-          unzip -q akharin_nameh_shiraz_github_build.zip -d project
+          unzip -q akharin_nameh_shiraz_github_build_milad_icon.zip -d project
+          echo "Project extracted"
+          find project -maxdepth 3 -type f | head -50
 
       - name: Find project root
         run: |
@@ -45,7 +47,7 @@ jobs:
             echo "PROJECT_DIR=$ROOT" >> "$GITHUB_ENV"
           fi
 
-      - name: Install Gradle
+      - name: Install Gradle 8.9
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip -O /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /tmp
@@ -60,19 +62,18 @@ jobs:
         run: |
           find "${{ env.PROJECT_DIR }}" -type f -name "*.apk" -print
 
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AkharinNamehShiraz-APK
+          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           APK=$(find "${{ env.PROJECT_DIR }}" -type f -name "*.apk" | head -1)
           gh release create "build-${{ github.run_number }}" "$APK" \
-            --title "آخرین نامه از شیراز - APK ${{
-              github.run_number
-            }}" \
-            --notes "نسخه آزمایشی برنامه آخرین نامه از شیراز"
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: AkharinNamehShiraz-APK
-          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk
+            --title "آخرین نامه از شیراز - APK ${{ github.run_number }}" \
+            --notes "نسخه آزمایشی برنامه آخرین نامه از شیراز - نویسنده: میلاد شجیراتی"
